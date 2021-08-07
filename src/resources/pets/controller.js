@@ -39,8 +39,39 @@ function getOneById(req, res) {
     .catch(console.error);
 }
 
+function updateOne(req, res) {
+  const id = Number(req.params.id);
+
+  const newItem = req.body;
+
+  const { title, type, author, topic, publicationdate } = newItem;
+
+  const sql = `
+    UPDATE books
+    SET title = $1,   
+    type = $2 ,
+    author = $3,
+    topic = $4
+    WHERE id = $5
+    RETURNING *;
+  `;
+  //   db.query(sql, [title, type, author, topic, publicationdate, id])
+  //     .then((result) => {
+  //       const updatedObject = result.rows[0];
+  //       res.json(updatedObject);
+  //     })
+  //     .catch(console.error(result));
+  // }
+  db.query(sql, [title, type, author, topic, id])
+    .then((result) => {
+      res.json(result);
+    })
+    .catch((error) => console.error(error));
+}
+
 module.exports = {
   createOne,
   getAll,
-  getOneById
+  getOneById,
+  updateOne,
 };
